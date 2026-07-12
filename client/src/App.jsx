@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from './context/useAuth'
 import Dashboard from './pages/Dashboard'
+import Drivers from './pages/Drivers'
 import Login from './pages/Login'
 import VehicleRegistry from './pages/VehicleRegistry'
 
@@ -39,6 +40,14 @@ function App() {
         element={
           <ProtectedRoute>
             <VehicleRegistry />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/drivers"
+        element={
+          <ProtectedRoute>
+            <Drivers />
           </ProtectedRoute>
         }
       />
