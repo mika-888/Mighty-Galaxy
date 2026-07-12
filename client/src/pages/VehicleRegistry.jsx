@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import AppLayout from '../components/AppLayout'
 import { useAuth } from '../context/useAuth'
+import { currency } from '../lib/currency'
 import { getAccess } from '../lib/permissions'
 import { supabase } from '../lib/supabase'
 import { statusClass } from '../lib/statusStyles'
@@ -15,11 +16,6 @@ const EMPTY_FORM = {
   odometer: '',
   acquisition_cost: '',
   status: 'Available',
-}
-
-function currency(value) {
-  const num = Number(value)
-  return Number.isFinite(num) ? `$${num.toLocaleString()}` : '-'
 }
 
 export default function VehicleRegistry() {

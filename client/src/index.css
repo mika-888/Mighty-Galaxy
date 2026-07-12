@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+@media print {
+  html {
+    color-scheme: light;
+  }
+
+  body * {
+    background-color: transparent !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+  }
+
+  main {
+    width: 100% !important;
+  }
+}

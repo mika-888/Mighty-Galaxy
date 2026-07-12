@@ -1,12 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import AppLayout from '../components/AppLayout'
+import { currency } from '../lib/currency'
 import { supabase } from '../lib/supabase'
-
-function currency(value) {
-  const num = Number(value)
-  return Number.isFinite(num) ? `$${num.toLocaleString()}` : '-'
-}
 
 function monthKey(dateString) {
   if (!dateString) return null
@@ -188,13 +184,22 @@ export default function Analytics() {
             <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Analytics</p>
             <h1 className="mt-1 text-2xl font-semibold tracking-normal">Reports &amp; Analytics</h1>
           </div>
-          <button
-            type="button"
-            onClick={handleExportCsv}
-            className="inline-flex items-center justify-center rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
-          >
-            Export CSV
-          </button>
+          <div className="flex gap-2 print:hidden">
+            <button
+              type="button"
+              onClick={handleExportCsv}
+              className="inline-flex items-center justify-center rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+            >
+              Export CSV
+            </button>
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="inline-flex items-center justify-center rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              Export PDF
+            </button>
+          </div>
         </div>
 
         {error && (

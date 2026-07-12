@@ -76,6 +76,12 @@ export default function AppLayout({ active, children }) {
       ])
 
       if (cancelled) return
+
+      const firstError = vehiclesResult.error || driversResult.error || tripsResult.error
+      if (firstError) {
+        console.error('Search failed:', firstError)
+      }
+
       setSearchResults({
         vehicles: vehiclesResult.data ?? [],
         drivers: driversResult.data ?? [],
@@ -101,7 +107,7 @@ export default function AppLayout({ active, children }) {
   return (
     <div className="min-h-screen bg-slate-100 text-slate-950 dark:bg-slate-950 dark:text-slate-100">
       <div className="flex min-h-screen">
-        <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:block">
+        <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:block print:hidden">
           <div className="flex h-16 items-center border-b border-slate-200 px-6 dark:border-slate-800">
             <div className="flex h-9 w-9 items-center justify-center rounded bg-slate-950 text-sm font-bold text-white dark:bg-white dark:text-slate-950">
               TO
@@ -132,7 +138,7 @@ export default function AppLayout({ active, children }) {
         </aside>
 
         <main className="min-w-0 flex-1">
-          <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-900/90">
+          <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-900/90 print:hidden">
             <div className="flex min-h-16 flex-col gap-3 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex items-center gap-3 lg:hidden">
                 <div className="flex h-9 w-9 items-center justify-center rounded bg-slate-950 text-sm font-bold text-white dark:bg-white dark:text-slate-950">
@@ -150,7 +156,7 @@ export default function AppLayout({ active, children }) {
                   }}
                   onFocus={() => setSearchOpen(true)}
                   placeholder="Search vehicles, drivers, trips..."
-                  className="h-10 w-full rounded-md border border-slate-200 bg-slate-50 px-3 text-sm outline-none transition focus:border-slate-400 focus:bg-white dark:border-slate-700 dark:bg-slate-950 dark:focus:border-slate-500"
+                  className="h-10 w-full rounded-md border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 outline-none transition focus:border-slate-400 focus:bg-white dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:border-slate-500 dark:focus:bg-slate-950"
                 />
                 {searchOpen && searchTerm.trim().length >= 2 && (
                   <div className="absolute left-0 right-0 top-full z-20 mt-1 max-h-80 overflow-y-auto rounded-md border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900">

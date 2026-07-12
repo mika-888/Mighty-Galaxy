@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import AppLayout from '../components/AppLayout'
+import { currency } from '../lib/currency'
 import { supabase } from '../lib/supabase'
 
 const EMPTY_FUEL_FORM = {
@@ -15,11 +16,6 @@ const EMPTY_EXPENSE_FORM = {
   vehicle_id: '',
   toll: '0',
   other: '0',
-}
-
-function currency(value) {
-  const num = Number(value)
-  return Number.isFinite(num) ? `$${num.toLocaleString()}` : '-'
 }
 
 function shortId(id) {
