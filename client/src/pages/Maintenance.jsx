@@ -51,7 +51,10 @@ export default function Maintenance() {
   }
 
   useEffect(() => {
-    loadData()
+    async function initialLoad() {
+      await loadData()
+    }
+    initialLoad()
   }, [])
 
   const eligibleVehicles = vehicles.filter((vehicle) => vehicle.status !== 'Retired')
