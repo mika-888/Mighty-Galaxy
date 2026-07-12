@@ -23,7 +23,7 @@ function initials(name, email) {
 }
 
 export default function AppLayout({ active, children }) {
-  const { user, profile } = useAuth()
+  const { user, profile, signOut } = useAuth()
   const displayName = profile?.name || user?.email || 'Operator'
   const role = profile?.role || 'Team Member'
 
@@ -76,6 +76,12 @@ export default function AppLayout({ active, children }) {
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-600 text-sm font-bold text-white">
                   {initials(profile?.name, user?.email)}
                 </div>
+                <button
+                  onClick={signOut}
+                  className="rounded-md border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                >
+                  Sign Out
+                </button>
               </div>
             </div>
           </header>
