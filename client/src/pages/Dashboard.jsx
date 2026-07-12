@@ -10,6 +10,12 @@ function shortId(id) {
   return id ? `#${id.slice(0, 8).toUpperCase()}` : '-'
 }
 
+function regionOf(regNo) {
+  if (!regNo) return 'Unknown'
+  const code = regNo.slice(0, 2).toUpperCase()
+  return /^[A-Z]{2}$/.test(code) ? code : 'Unknown'
+}
+
 export default function Dashboard() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -19,6 +25,9 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [accessDeniedNotice, setAccessDeniedNotice] = useState(Boolean(location.state?.accessDenied))
+  const [typeFilter, setTypeFilter] = useState('All')
+  const [statusFilter, setStatusFilter] = useState('All')
+  const [regionFilter, setRegionFilter] = useState('All')
 
   useEffect(() => {
     if (location.state?.accessDenied) {
@@ -55,30 +64,49 @@ export default function Dashboard() {
     loadDashboard()
   }, [])
 
+  const types = useMemo(() => {
+    const unique = new Set(vehicles.map((vehicle) => vehicle.type).filter(Boolean))
+    return Array.from(unique).sort()
+  }, [vehicles])
+
+  const regions = useMemo(() => {
+    const unique = new Set(vehicles.map((vehicle) => regionOf(vehicle.reg_no)))
+    return Array.from(unique).sort()
+  }, [vehicles])
+
+  const filteredVehicles = useMemo(() => {
+    return vehicles.filter((vehicle) => {
+      if (typeFilter !== 'All' && vehicle.type !== typeFilter) return false
+      if (statusFilter !== 'All' && vehicle.status !== statusFilter) return false
+      if (regionFilter !== 'All' && regionOf(vehicle.reg_no) !== regionFilter) return false
+      return true
+    })
+  }, [vehicles, typeFilter, statusFilter, regionFilter])
+
   const metrics = useMemo(() => {
-    const totalActiveVehicles = vehicles.filter((vehicle) => vehicle.status !== 'Retired').length
-    const onTripVehicles = vehicles.filter((vehicle) => vehicle.status === 'On Trip').length
+    const totalActiveVehicles = filteredVehicles.filter((vehicle) => vehicle.status !== 'Retired').length
+    const onTripVehicles = filteredVehicles.filter((vehicle) => vehicle.status === 'On Trip').length
     const utilization = totalActiveVehicles
       ? Math.round((onTripVehicles / totalActiveVehicles) * 100)
       : 0
 
     return [
       { label: 'Active Vehicles', value: totalActiveVehicles, tone: 'border-l-sky-500' },
-      { label: 'Available Vehicles', value: vehicles.filter((vehicle) => vehicle.status === 'Available').length, tone: 'border-l-emerald-500' },
-      { label: 'Vehicles In Maintenance', value: vehicles.filter((vehicle) => vehicle.status === 'In Shop').length, tone: 'border-l-amber-500' },
+      { label: 'Available Vehicles', value: filteredVehicles.filter((vehicle) => vehicle.status === 'Available').length, tone: 'border-l-emerald-500' },
+      { label: 'Vehicles In Maintenance', value: filteredVehicles.filter((vehicle) => vehicle.status === 'In Shop').length, tone: 'border-l-amber-500' },
       { label: 'Active Trips', value: trips.filter((trip) => trip.status === 'Dispatched').length, tone: 'border-l-blue-500' },
       { label: 'Pending Trips', value: trips.filter((trip) => trip.status === 'Draft').length, tone: 'border-l-slate-500' },
       { label: 'Drivers On Duty', value: drivers.filter((driver) => ['On Trip', 'Available'].includes(driver.status)).length, tone: 'border-l-teal-500' },
       { label: 'Fleet Utilization', value: `${utilization}%`, tone: 'border-l-violet-500' },
     ]
-  }, [drivers, trips, vehicles])
+  }, [drivers, trips, filteredVehicles])
 
   const statusCounts = useMemo(() => {
     return vehicleStatuses.map((status) => ({
       status,
-      count: vehicles.filter((vehicle) => vehicle.status === status).length,
+      count: filteredVehicles.filter((vehicle) => vehicle.status === status).length,
     }))
-  }, [vehicles])
+  }, [filteredVehicles])
 
   const maxStatusCount = Math.max(...statusCounts.map((item) => item.count), 1)
 
@@ -91,14 +119,51 @@ export default function Dashboard() {
         </div>
 
         <div className="grid gap-3 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 sm:grid-cols-3">
-          {['Vehicle Type', 'Status', 'Region'].map((label) => (
-            <label key={label} className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">
-              {label}
-              <select className="mt-1 h-10 w-full rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-medium normal-case text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                <option>All</option>
-              </select>
-            </label>
-          ))}
+          <label className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">
+            Vehicle Type
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="mt-1 h-10 w-full rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-medium normal-case text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            >
+              <option>All</option>
+              {types.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">
+            Status
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="mt-1 h-10 w-full rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-medium normal-case text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            >
+              <option>All</option>
+              {vehicleStatuses.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">
+            Region
+            <select
+              value={regionFilter}
+              onChange={(e) => setRegionFilter(e.target.value)}
+              className="mt-1 h-10 w-full rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-medium normal-case text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            >
+              <option>All</option>
+              {regions.map((region) => (
+                <option key={region} value={region}>
+                  {region}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
 
         {accessDeniedNotice && (
