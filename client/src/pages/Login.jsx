@@ -53,10 +53,13 @@ export default function Login() {
       <div className="w-full max-w-sm bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-6">
         <div className="text-center">
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-            {mode === 'signin' ? 'Sign In' : 'Sign Up'}
+            TransitOps
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            FleetView
+            Smart Transport Operations Platform
+          </p>
+          <p className="text-base font-medium text-gray-700 dark:text-gray-300 mt-4">
+            {mode === 'signin' ? 'Sign In' : 'Sign Up'}
           </p>
         </div>
 
