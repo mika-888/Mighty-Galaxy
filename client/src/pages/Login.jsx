@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
 
 const ROLES = ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst']
 
 export default function Login() {
-  const { user, profile, signIn, signUp, signOut } = useAuth()
+  const { user, profile, signIn, signUp } = useAuth()
   const [mode, setMode] = useState('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -14,21 +15,7 @@ export default function Login() {
   const [submitting, setSubmitting] = useState(false)
 
   if (user && profile) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="text-center space-y-4">
-          <p className="text-xl font-medium text-gray-900 dark:text-gray-100">
-            Logged in as {profile.name} ({profile.role})
-          </p>
-          <button
-            onClick={signOut}
-            className="px-4 py-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-          >
-            Sign Out
-          </button>
-        </div>
-      </div>
-    )
+    return <Navigate to="/" replace />
   }
 
   async function handleSubmit(e) {
