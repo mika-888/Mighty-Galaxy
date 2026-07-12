@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
+import { useTheme } from '../context/useTheme'
 import { getAccess } from '../lib/permissions'
 
 const navItems = [
@@ -33,6 +34,7 @@ function initials(name, email) {
 
 export default function AppLayout({ active, children }) {
   const { user, profile, signOut } = useAuth()
+  const { isDark, toggleTheme } = useTheme()
   const displayName = profile?.name || user?.email || 'Operator'
   const role = profile?.role || 'Team Member'
 
@@ -96,6 +98,16 @@ export default function AppLayout({ active, children }) {
                 className="ui-input h-10 w-full bg-slate-50/80 dark:bg-slate-950 lg:max-w-md"
               />
               <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  className="secondary-button h-10 gap-2 px-3"
+                  aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                  title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                >
+                  <span aria-hidden="true">{isDark ? '☀' : '☾'}</span>
+                  <span className="hidden sm:inline">{isDark ? 'Light' : 'Dark'}</span>
+                </button>
                 <div className="text-right">
                   <p className="text-sm font-semibold">{displayName}</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400">{role}</p>

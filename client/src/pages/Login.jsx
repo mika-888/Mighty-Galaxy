@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
+import { useTheme } from '../context/useTheme'
 
 const ROLES = ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst']
 
 export default function Login() {
   const { user, profile, signIn, signUp } = useAuth()
+  const { isDark, toggleTheme } = useTheme()
   const [mode, setMode] = useState('signin')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -40,7 +42,16 @@ export default function Login() {
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-200/70 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30 lg:grid-cols-[420px_1fr]">
         <aside className="flex flex-col justify-between bg-slate-950 p-8 text-white sm:p-10">
           <div>
-            <div className="brand-mark h-10 w-10">TO</div>
+            <div className="flex items-center justify-between gap-4">
+              <div className="brand-mark h-10 w-10">TO</div>
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="rounded-lg border border-slate-700 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:bg-slate-900"
+              >
+                {isDark ? 'Light mode' : 'Dark mode'}
+              </button>
+            </div>
             <h1 className="mt-6 text-3xl font-black tracking-tight">TransitOps</h1>
             <p className="mt-2 max-w-xs text-sm leading-6 text-slate-400">
               Smart transport operations for dispatch, safety, fuel, and fleet decisions.
