@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #05060a;
+  color: #f1f5f9;
+}
+
 @media print {
   html {
     color-scheme: light;

@@ -145,175 +145,163 @@ export default function Maintenance() {
       <section className="space-y-6 p-4 sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Maintenance</p>
+            <p className="text-sm font-medium text-slate-400">Maintenance</p>
             <h1 className="mt-1 text-2xl font-semibold tracking-normal">Service Log</h1>
           </div>
           <button
             type="button"
             onClick={openAddModal}
-            className="inline-flex items-center justify-center rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+            className="inline-flex items-center justify-center rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
           >
             + Log Service Record
           </button>
         </div>
 
         {error && (
-          <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-300">
+          <div className="rounded-lg border border-rose-800 bg-rose-950/30 px-4 py-3 text-sm text-rose-300">
             {error}
           </div>
         )}
 
-        <div className="rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase text-slate-500 dark:bg-slate-950 dark:text-slate-400">
-                <tr>
-                  <th className="px-4 py-3">Vehicle</th>
-                  <th className="px-4 py-3">Service Type</th>
-                  <th className="px-4 py-3">Cost</th>
-                  <th className="px-4 py-3">Date</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
-                {logs.map((log) => (
-                  <tr key={log.id}>
-                    <td className="px-4 py-3 font-medium">{log.vehicles?.name || log.vehicles?.reg_no || '-'}</td>
-                    <td className="px-4 py-3">{log.service_type || '-'}</td>
-                    <td className="px-4 py-3">{currency(log.cost)}</td>
-                    <td className="px-4 py-3">{log.service_date || '-'}</td>
-                    <td className="px-4 py-3">
-                      <span className={`rounded-full px-2 py-1 text-xs font-semibold ring-1 ${statusClass(log.status)}`}>
-                        {log.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      {log.status === 'Active' && (
-                        <button
-                          type="button"
-                          onClick={() => handleCloseRecord(log)}
-                          className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
-                        >
-                          Close/Complete
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-                {!loading && logs.length === 0 && (
-                  <tr>
-                    <td className="px-4 py-8 text-center text-slate-500 dark:text-slate-400" colSpan="6">
-                      No maintenance records yet
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+        <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
+          <div className="rounded-lg border border-slate-800 bg-[#0e1017] p-5 shadow-sm">
+            <h2 className="font-semibold">Log Service Record</h2>
+            <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+              <label className="block text-sm font-medium text-slate-300">
+                Vehicle
+                <select
+                  required
+                  value={form.vehicle_id}
+                  onChange={(e) => updateField('vehicle_id', e.target.value)}
+                  className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
+                >
+                  <option value="">Select vehicle</option>
+                  {eligibleVehicles.map((vehicle) => (
+                    <option key={vehicle.id} value={vehicle.id}>
+                      {vehicle.name || vehicle.reg_no} ({vehicle.reg_no})
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm font-medium text-slate-300">
+                Service Type
+                <input
+                  type="text"
+                  required
+                  value={form.service_type}
+                  onChange={(e) => updateField('service_type', e.target.value)}
+                  placeholder="e.g. Oil Change"
+                  className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none placeholder:text-slate-600 focus:border-orange-500"
+                />
+              </label>
+              <label className="block text-sm font-medium text-slate-300">
+                Cost
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  required
+                  value={form.cost}
+                  onChange={(e) => updateField('cost', e.target.value)}
+                  className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
+                />
+              </label>
+              <label className="block text-sm font-medium text-slate-300">
+                Date
+                <input
+                  type="date"
+                  required
+                  value={form.service_date}
+                  onChange={(e) => updateField('service_date', e.target.value)}
+                  className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
+                />
+              </label>
+              <label className="block text-sm font-medium text-slate-300">
+                Status
+                <select
+                  value={form.status}
+                  onChange={(e) => updateField('status', e.target.value)}
+                  className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
+                >
+                  <option value="Active">Active</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </label>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 z-20 flex items-center justify-center bg-slate-950/50 px-4">
-          <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-lg dark:bg-slate-900">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Log Service Record</h2>
+              {formError && <p className="text-sm text-rose-400">{formError}</p>}
+
               <button
-                type="button"
-                onClick={closeModal}
-                className="text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                type="submit"
+                disabled={submitting}
+                className="w-full rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:opacity-50"
               >
-                ✕
+                {submitting ? 'Saving…' : 'Save'}
               </button>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="sm:col-span-2">
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Vehicle</label>
-                  <select
-                    required
-                    value={form.vehicle_id}
-                    onChange={(e) => updateField('vehicle_id', e.target.value)}
-                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-                  >
-                    <option value="">Select vehicle</option>
-                    {eligibleVehicles.map((vehicle) => (
-                      <option key={vehicle.id} value={vehicle.id}>
-                        {vehicle.name || vehicle.reg_no} ({vehicle.reg_no})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Service Type</label>
-                  <input
-                    type="text"
-                    required
-                    value={form.service_type}
-                    onChange={(e) => updateField('service_type', e.target.value)}
-                    placeholder="e.g. Oil Change"
-                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Cost</label>
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    required
-                    value={form.cost}
-                    onChange={(e) => updateField('cost', e.target.value)}
-                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Date</label>
-                  <input
-                    type="date"
-                    required
-                    value={form.service_date}
-                    onChange={(e) => updateField('service_date', e.target.value)}
-                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
-                  <select
-                    value={form.status}
-                    onChange={(e) => updateField('status', e.target.value)}
-                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-                  >
-                    <option value="Active">Active</option>
-                    <option value="Completed">Completed</option>
-                  </select>
-                </div>
-              </div>
-
-              {formError && <p className="text-sm text-rose-600 dark:text-rose-400">{formError}</p>}
-
-              <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="rounded-md px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:opacity-50"
-                >
-                  {submitting ? 'Saving…' : 'Log Record'}
-                </button>
-              </div>
             </form>
           </div>
+
+          <div className="rounded-lg border border-slate-800 bg-[#0e1017] shadow-sm">
+            <div className="border-b border-slate-800 px-4 py-3">
+              <h2 className="font-semibold">Service Log</h2>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] text-left text-sm">
+                <thead className="bg-slate-950/60 text-xs uppercase text-slate-400">
+                  <tr>
+                    <th className="px-4 py-3">Vehicle</th>
+                    <th className="px-4 py-3">Service</th>
+                    <th className="px-4 py-3">Cost</th>
+                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800">
+                  {logs.map((log) => (
+                    <tr key={log.id}>
+                      <td className="px-4 py-3 font-medium">{log.vehicles?.name || log.vehicles?.reg_no || '-'}</td>
+                      <td className="px-4 py-3">{log.service_type || '-'}</td>
+                      <td className="px-4 py-3">{currency(log.cost)}</td>
+                      <td className="px-4 py-3">
+                        <span className={`rounded-full px-2 py-1 text-xs font-semibold ${statusClass(log.status)}`}>
+                          {log.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        {log.status === 'Active' && (
+                          <button
+                            type="button"
+                            onClick={() => handleCloseRecord(log)}
+                            className="text-sm font-medium text-orange-400 hover:underline"
+                          >
+                            Close
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {!loading && logs.length === 0 && (
+                    <tr>
+                      <td className="px-4 py-8 text-center text-slate-400" colSpan="5">
+                        No maintenance records yet
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-      )}
+
+        <div className="flex flex-wrap items-center gap-4 rounded-lg border border-slate-800 bg-[#0e1017] p-4 text-xs">
+          <span className="text-slate-400">Lifecycle:</span>
+          <span className={`rounded-full px-2 py-1 font-semibold ${statusClass('Available')}`}>Available</span>
+          <span className="text-slate-500">→</span>
+          <span className={`rounded-full px-2 py-1 font-semibold ${statusClass('In Shop')}`}>In Shop</span>
+          <span className="text-slate-500">→ (on close) →</span>
+          <span className={`rounded-full px-2 py-1 font-semibold ${statusClass('Available')}`}>Available</span>
+        </div>
+        <p className="text-xs text-rose-400">Rule: In Shop vehicles are removed from the dispatch pool</p>
+      </section>
     </AppLayout>
   )
 }
