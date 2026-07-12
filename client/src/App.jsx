@@ -3,6 +3,7 @@ import { useAuth } from './context/useAuth'
 import Dashboard from './pages/Dashboard'
 import Drivers from './pages/Drivers'
 import Login from './pages/Login'
+import TripDispatcher from './pages/TripDispatcher'
 import VehicleRegistry from './pages/VehicleRegistry'
 
 function ProtectedRoute({ children }) {
@@ -48,6 +49,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Drivers />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/trips"
+        element={
+          <ProtectedRoute>
+            <TripDispatcher />
           </ProtectedRoute>
         }
       />
