@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import AppLayout from '../components/AppLayout'
+import { currency } from '../lib/currency'
 import { supabase } from '../lib/supabase'
 import { statusClass } from '../lib/statusStyles'
 
@@ -9,11 +10,6 @@ const EMPTY_FORM = {
   cost: '',
   service_date: new Date().toISOString().slice(0, 10),
   status: 'Active',
-}
-
-function currency(value) {
-  const num = Number(value)
-  return Number.isFinite(num) ? `$${num.toLocaleString()}` : '-'
 }
 
 export default function Maintenance() {

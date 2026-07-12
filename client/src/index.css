@@ -8,3 +8,19 @@ body {
   background-color: #05060a;
   color: #f1f5f9;
 }
+
+@media print {
+  html {
+    color-scheme: light;
+  }
+
+  body * {
+    background-color: transparent !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+  }
+
+  main {
+    width: 100% !important;
+  }
+}
