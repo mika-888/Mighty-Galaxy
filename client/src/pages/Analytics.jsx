@@ -152,6 +152,7 @@ export default function Analytics() {
   }, [vehicles, fuelCostByVehicle, maintenanceCostByVehicle, revenueByVehicle])
 
   const topCostliestVehicles = vehicleCostRanking.slice(0, 5)
+  const maxCost = Math.max(...topCostliestVehicles.map((v) => v.totalCost), 1)
 
   const monthlyRevenue = useMemo(() => {
     const totals = new Map()
@@ -185,72 +186,100 @@ export default function Analytics() {
       <section className="space-y-6 p-4 sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Analytics</p>
+            <p className="text-sm font-medium text-slate-400">Analytics</p>
             <h1 className="mt-1 text-2xl font-semibold tracking-normal">Reports &amp; Analytics</h1>
           </div>
           <button
             type="button"
             onClick={handleExportCsv}
-            className="inline-flex items-center justify-center rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+            className="inline-flex items-center justify-center rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
           >
             Export CSV
           </button>
         </div>
 
         {error && (
-          <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-300">
+          <div className="rounded-lg border border-rose-800 bg-rose-950/30 px-4 py-3 text-sm text-rose-300">
             {error}
           </div>
         )}
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <div className="rounded-lg border border-slate-200 border-l-4 border-l-sky-500 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Fuel Efficiency</p>
+          <div className="rounded-lg border border-slate-800 border-l-4 border-l-sky-500 bg-[#0e1017] p-4 shadow-sm">
+            <p className="text-sm font-medium text-slate-400">Fuel Efficiency</p>
             <p className="mt-3 text-3xl font-semibold">{loading ? '--' : `${fuelEfficiency.toFixed(2)} km/l`}</p>
           </div>
-          <div className="rounded-lg border border-slate-200 border-l-4 border-l-emerald-500 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Fleet Utilization</p>
+          <div className="rounded-lg border border-slate-800 border-l-4 border-l-emerald-500 bg-[#0e1017] p-4 shadow-sm">
+            <p className="text-sm font-medium text-slate-400">Fleet Utilization</p>
             <p className="mt-3 text-3xl font-semibold">{loading ? '--' : `${fleetUtilization.toFixed(0)}%`}</p>
           </div>
-          <div className="rounded-lg border border-slate-200 border-l-4 border-l-amber-500 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Operational Cost</p>
+          <div className="rounded-lg border border-slate-800 border-l-4 border-l-orange-500 bg-[#0e1017] p-4 shadow-sm">
+            <p className="text-sm font-medium text-slate-400">Operational Cost</p>
             <p className="mt-3 text-3xl font-semibold">{loading ? '--' : currency(operationalCost)}</p>
           </div>
-          <div className="rounded-lg border border-slate-200 border-l-4 border-l-violet-500 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Vehicle ROI</p>
-            <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+          <div className="rounded-lg border border-slate-800 border-l-4 border-l-violet-500 bg-[#0e1017] p-4 shadow-sm">
+            <p className="text-sm font-medium text-slate-400">Vehicle ROI</p>
+            <p className="mt-2 text-xs text-slate-400">
               ROI = (Revenue − (Maintenance + Fuel)) / Acquisition Cost
             </p>
-            <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">
+            <p className="mt-1 text-xs text-slate-500">
               Revenue is 0 until entered per trip — see per-vehicle table below.
             </p>
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <div className="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-            <h2 className="font-semibold">Monthly Revenue</h2>
+        <div className="grid gap-6 xl:grid-cols-2">
+          <div className="rounded-lg border border-slate-800 bg-[#0e1017] shadow-sm">
+            <div className="border-b border-slate-800 px-4 py-3">
+              <h2 className="font-semibold">Monthly Revenue</h2>
+            </div>
+            <div className="h-72 p-4">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={monthlyRevenue}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                  <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#94a3b8' }} stroke="#334155" />
+                  <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} stroke="#334155" />
+                  <Tooltip
+                    formatter={(value) => currency(value)}
+                    contentStyle={{ background: '#0e1017', border: '1px solid #1e293b', borderRadius: 8, color: '#f1f5f9' }}
+                  />
+                  <Bar dataKey="revenue" fill="#f97316" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-          <div className="h-72 p-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={monthlyRevenue}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-800" />
-                <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip formatter={(value) => currency(value)} />
-                <Bar dataKey="revenue" fill="#0d9488" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+
+          <div className="rounded-lg border border-slate-800 bg-[#0e1017] p-4 shadow-sm">
+            <h2 className="font-semibold">Top Costliest Vehicles</h2>
+            <div className="mt-4 space-y-4">
+              {topCostliestVehicles.map((vehicle) => (
+                <div key={vehicle.id}>
+                  <div className="mb-1 flex items-center justify-between text-sm">
+                    <span className="font-medium">{vehicle.name}</span>
+                    <span className="text-slate-400">{currency(vehicle.totalCost)}</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+                    <div
+                      className="h-full rounded-full bg-orange-500"
+                      style={{ width: `${(vehicle.totalCost / maxCost) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+              {!loading && topCostliestVehicles.length === 0 && (
+                <p className="text-sm text-slate-400">No vehicle cost data yet</p>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-          <div className="border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-            <h2 className="font-semibold">Top Costliest Vehicles</h2>
+        <div className="rounded-lg border border-slate-800 bg-[#0e1017] shadow-sm">
+          <div className="border-b border-slate-800 px-4 py-3">
+            <h2 className="font-semibold">Vehicle Cost Breakdown</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase text-slate-500 dark:bg-slate-950 dark:text-slate-400">
+              <thead className="bg-slate-950/60 text-xs uppercase text-slate-400">
                 <tr>
                   <th className="px-4 py-3">Vehicle</th>
                   <th className="px-4 py-3">Fuel Cost</th>
@@ -259,7 +288,7 @@ export default function Analytics() {
                   <th className="px-4 py-3">ROI</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-800">
                 {topCostliestVehicles.map((vehicle) => (
                   <tr key={vehicle.id}>
                     <td className="px-4 py-3 font-medium">{vehicle.name}</td>
@@ -271,7 +300,7 @@ export default function Analytics() {
                 ))}
                 {!loading && topCostliestVehicles.length === 0 && (
                   <tr>
-                    <td className="px-4 py-8 text-center text-slate-500 dark:text-slate-400" colSpan="5">
+                    <td className="px-4 py-8 text-center text-slate-400" colSpan="5">
                       No vehicle cost data yet
                     </td>
                   </tr>

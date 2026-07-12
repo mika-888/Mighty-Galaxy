@@ -13,6 +13,7 @@ export default function Login() {
   const [role, setRole] = useState(ROLES[0])
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [dark, setDark] = useState(false)
 
   if (user && profile) {
     return <Navigate to="/" replace />
@@ -35,108 +36,143 @@ export default function Login() {
     }
   }
 
+  const inputClass = dark
+    ? 'w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 outline-none focus:border-orange-500'
+    : 'w-full rounded-lg border border-transparent bg-[#e9eefb] px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-orange-400'
+
+  const labelClass = dark ? 'mb-1 block text-sm font-medium text-slate-300' : 'mb-1 block text-sm font-semibold text-slate-800'
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-      <div className="w-full max-w-sm bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
-            TransitOps
-          </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Smart Transport Operations Platform
-          </p>
-          <p className="text-base font-medium text-gray-700 dark:text-gray-300 mt-4">
-            {mode === 'signin' ? 'Sign In' : 'Sign Up'}
-          </p>
+    <div className={`flex min-h-screen items-center justify-center px-4 py-10 ${dark ? 'bg-slate-950' : 'bg-slate-100'}`}>
+      <div className="flex w-full max-w-5xl overflow-hidden rounded-2xl shadow-xl">
+        <div className="hidden w-1/2 flex-col justify-between bg-[#0a0e1a] p-10 lg:flex">
+          <div>
+            <div className="flex items-center justify-between">
+              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-orange-500 text-sm font-bold text-slate-950">
+                TO
+              </div>
+              <button
+                type="button"
+                onClick={() => setDark((prev) => !prev)}
+                className="rounded-full border border-slate-700 px-4 py-1.5 text-sm font-medium text-slate-200 transition hover:bg-slate-800"
+              >
+                {dark ? 'Light mode' : 'Dark mode'}
+              </button>
+            </div>
+
+            <h1 className="mt-8 text-3xl font-extrabold text-white">TransitOps</h1>
+            <p className="mt-2 max-w-xs text-sm text-slate-400">
+              Smart transport operations for dispatch, safety, fuel, and fleet decisions.
+            </p>
+
+            <div className="mt-12">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-400">One login, four roles</p>
+              <ul className="mt-4 space-y-3">
+                {ROLES.map((r) => (
+                  <li key={r} className="flex items-center gap-2 font-medium text-white">
+                    <span className="h-2 w-2 shrink-0 rounded-full bg-orange-500" />
+                    {r}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <p className="text-xs text-slate-500">TransitOps prototype · RBAC enabled</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {mode === 'signup' && (
+        <div className={`flex w-full flex-col justify-center p-10 lg:w-1/2 lg:p-16 ${dark ? 'bg-[#0e1017]' : 'bg-white'}`}>
+          <p className={`text-sm font-semibold ${dark ? 'text-emerald-400' : 'text-emerald-600'}`}>Authentication</p>
+          <h2 className={`mt-1 text-3xl font-extrabold ${dark ? 'text-white' : 'text-slate-900'}`}>
+            Sign in to your account
+          </h2>
+          <p className={`mt-2 text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>
+            Enter your credentials to continue into the operations workspace.
+          </p>
+
+          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+            {mode === 'signup' && (
+              <div>
+                <label className={labelClass}>Name</label>
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+            )}
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Name
-              </label>
+              <label className={labelClass}>Email</label>
               <input
-                type="text"
+                type="email"
                 required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="rajdeep.x70@gmail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={inputClass}
               />
             </div>
-          )}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
-
-          {mode === 'signup' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Role
-              </label>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                {ROLES.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
+              <label className={labelClass}>Password</label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={inputClass}
+              />
             </div>
-          )}
 
-          {error && (
-            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-          )}
+            {mode === 'signup' && (
+              <div>
+                <label className={labelClass}>Role (RBAC)</label>
+                <select value={role} onChange={(e) => setRole(e.target.value)} className={inputClass}>
+                  {ROLES.map((r) => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full rounded-md bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-medium py-2 transition"
-          >
-            {submitting ? 'Please wait…' : mode === 'signin' ? 'Sign In' : 'Sign Up'}
-          </button>
-        </form>
+            {error && (
+              <div
+                className={`rounded-lg px-3 py-2 text-sm ${
+                  dark ? 'border border-rose-800 bg-rose-950/30 text-rose-300' : 'border border-rose-200 bg-rose-50 text-rose-700'
+                }`}
+              >
+                {error}
+              </div>
+            )}
 
-        <p className="text-sm text-center text-gray-500 dark:text-gray-400">
-          {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
-          <button
-            type="button"
-            onClick={() => {
-              setError('')
-              setMode(mode === 'signin' ? 'signup' : 'signin')
-            }}
-            className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
-          >
-            {mode === 'signin' ? 'Sign Up' : 'Sign In'}
-          </button>
-        </p>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full rounded-lg bg-orange-500 py-3 font-bold text-slate-950 transition hover:bg-orange-600 disabled:opacity-50"
+            >
+              {submitting ? 'Please wait…' : mode === 'signin' ? 'Sign In' : 'Sign Up'}
+            </button>
+          </form>
+
+          <p className={`mt-6 text-center text-sm ${dark ? 'text-slate-400' : 'text-slate-500'}`}>
+            {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
+            <button
+              type="button"
+              onClick={() => {
+                setError('')
+                setMode(mode === 'signin' ? 'signup' : 'signin')
+              }}
+              className={`font-semibold hover:underline ${dark ? 'text-emerald-400' : 'text-emerald-600'}`}
+            >
+              {mode === 'signin' ? 'Sign Up' : 'Sign In'}
+            </button>
+          </p>
+        </div>
       </div>
     </div>
   )

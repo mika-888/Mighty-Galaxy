@@ -249,33 +249,33 @@ export default function TripDispatcher() {
     <AppLayout active="Trips">
       <section className="space-y-6 p-4 sm:p-6">
         <div>
-          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Trips</p>
+          <p className="text-sm font-medium text-slate-400">Trips</p>
           <h1 className="mt-1 text-2xl font-semibold tracking-normal">Trip Dispatcher</h1>
         </div>
 
         {error && (
-          <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-300">
+          <div className="rounded-lg border border-rose-800 bg-rose-950/30 px-4 py-3 text-sm text-rose-300">
             {error}
           </div>
         )}
 
         {actionMessage && (
-          <div className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-700 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-300">
+          <div className="rounded-lg border border-sky-800 bg-sky-950/30 px-4 py-3 text-sm text-sky-300">
             {actionMessage}
           </div>
         )}
 
         <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
           <div className="space-y-4">
-            <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="rounded-lg border border-slate-800 bg-[#0e1017] p-4 shadow-sm">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <h2 className="font-semibold">Live Board</h2>
-                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                  <p className="mt-1 text-sm text-slate-400">
                     Drafts, active dispatches, and recent outcomes.
                   </p>
                 </div>
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                <span className="rounded-full bg-slate-800 px-3 py-1 text-xs font-semibold text-slate-300">
                   {loading ? '--' : `${trips.length} trips`}
                 </span>
               </div>
@@ -284,10 +284,10 @@ export default function TripDispatcher() {
             {groupedTrips.map((group) => (
               <div key={group.status} className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <span className={`rounded-full px-2 py-1 text-xs font-semibold ring-1 ${statusClass(group.status)}`}>
+                  <span className={`rounded-full px-2 py-1 text-xs font-semibold ${statusClass(group.status)}`}>
                     {group.status}
                   </span>
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{group.trips.length}</span>
+                  <span className="text-xs font-medium text-slate-400">{group.trips.length}</span>
                 </div>
 
                 <div className="grid gap-3 lg:grid-cols-2">
@@ -299,41 +299,41 @@ export default function TripDispatcher() {
                     return (
                       <article
                         key={trip.id}
-                        className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+                        className="rounded-lg border border-slate-800 bg-[#0e1017] p-4 shadow-sm"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <p className="font-semibold">{shortId(trip.id)}</p>
-                            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                            <p className="mt-1 text-sm text-slate-400">
                               {trip.source || 'Unknown'} → {trip.destination || 'Unknown'}
                             </p>
                           </div>
-                          <span className={`rounded-full px-2 py-1 text-xs font-semibold ring-1 ${statusClass(trip.status)}`}>
+                          <span className={`rounded-full px-2 py-1 text-xs font-semibold ${statusClass(trip.status)}`}>
                             {trip.status}
                           </span>
                         </div>
 
                         <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
                           <div>
-                            <p className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">Vehicle</p>
+                            <p className="text-xs font-semibold uppercase text-slate-400">Vehicle</p>
                             <p className="mt-1 font-medium">{trip.vehicles?.name || trip.vehicles?.reg_no || '-'}</p>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">Driver</p>
+                            <p className="text-xs font-semibold uppercase text-slate-400">Driver</p>
                             <p className="mt-1 font-medium">{trip.drivers?.name || '-'}</p>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">Cargo</p>
+                            <p className="text-xs font-semibold uppercase text-slate-400">Cargo</p>
                             <p className="mt-1 font-medium">{trip.cargo_weight ?? '-'} kg</p>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">ETA</p>
+                            <p className="text-xs font-semibold uppercase text-slate-400">ETA</p>
                             <p className="mt-1 font-medium">{trip.eta || '-'}</p>
                           </div>
                         </div>
 
                         {blockMessage && (
-                          <p className="mt-4 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-300">
+                          <p className="mt-4 rounded-md border border-rose-800 bg-rose-950/30 px-3 py-2 text-sm font-medium text-rose-300">
                             {blockMessage}
                           </p>
                         )}
@@ -346,7 +346,7 @@ export default function TripDispatcher() {
                                 onClick={() => dispatchTrip(trip)}
                                 disabled={dispatchDisabled || actionBusy}
                                 title={blockMessage || 'Dispatch trip'}
-                                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="rounded-md bg-orange-500 px-3 py-2 text-sm font-medium text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50"
                               >
                                 Dispatch
                               </button>
@@ -365,7 +365,7 @@ export default function TripDispatcher() {
                                   type="button"
                                   onClick={() => cancelTrip(trip)}
                                   disabled={actionBusy}
-                                  className="rounded-md border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:opacity-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                                  className="rounded-md border border-slate-700 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-800 disabled:opacity-50"
                                 >
                                   Cancel
                                 </button>
@@ -381,47 +381,47 @@ export default function TripDispatcher() {
             ))}
           </div>
 
-          <aside className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:sticky xl:top-24 xl:self-start">
+          <aside className="rounded-lg border border-slate-800 bg-[#0e1017] p-5 shadow-sm xl:sticky xl:top-24 xl:self-start">
             <h2 className="font-semibold">Create Trip</h2>
             {!canEdit ? (
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              <p className="mt-1 text-sm text-slate-400">
                 Your role has view-only access to Trips.
               </p>
             ) : (
               <>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            <p className="mt-1 text-sm text-slate-400">
               Only available vehicles and non-expired available drivers are shown.
             </p>
 
             <form onSubmit={handleCreateTrip} className="mt-5 space-y-4">
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                <label className="text-sm font-medium text-slate-300">
                   Source
                   <input
                     type="text"
                     required
                     value={form.source}
                     onChange={(e) => updateField('source', e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                   />
                 </label>
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                <label className="text-sm font-medium text-slate-300">
                   Destination
                   <input
                     type="text"
                     required
                     value={form.destination}
                     onChange={(e) => updateField('destination', e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                   />
                 </label>
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                <label className="text-sm font-medium text-slate-300">
                   Vehicle
                   <select
                     required
                     value={form.vehicle_id}
                     onChange={(e) => updateField('vehicle_id', e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                   >
                     <option value="">Select vehicle</option>
                     {availableVehicles.map((vehicle) => (
@@ -431,13 +431,13 @@ export default function TripDispatcher() {
                     ))}
                   </select>
                 </label>
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                <label className="text-sm font-medium text-slate-300">
                   Driver
                   <select
                     required
                     value={form.driver_id}
                     onChange={(e) => updateField('driver_id', e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                   >
                     <option value="">Select driver</option>
                     {availableDrivers.map((driver) => (
@@ -447,7 +447,7 @@ export default function TripDispatcher() {
                     ))}
                   </select>
                 </label>
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                <label className="text-sm font-medium text-slate-300">
                   Cargo Weight
                   <input
                     type="number"
@@ -455,10 +455,10 @@ export default function TripDispatcher() {
                     required
                     value={form.cargo_weight}
                     onChange={(e) => updateField('cargo_weight', e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                   />
                 </label>
-                <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                <label className="text-sm font-medium text-slate-300">
                   Planned Distance
                   <input
                     type="number"
@@ -466,17 +466,17 @@ export default function TripDispatcher() {
                     required
                     value={form.planned_distance}
                     onChange={(e) => updateField('planned_distance', e.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                   />
                 </label>
               </div>
 
-              {formError && <p className="text-sm font-medium text-rose-600 dark:text-rose-400">{formError}</p>}
+              {formError && <p className="text-sm font-medium text-rose-400">{formError}</p>}
 
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+                className="w-full rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:opacity-50"
               >
                 {submitting ? 'Creating...' : 'Create Draft Trip'}
               </button>
@@ -488,24 +488,24 @@ export default function TripDispatcher() {
       </section>
 
       {completingTrip && (
-        <div className="fixed inset-0 z-20 flex items-center justify-center bg-slate-950/50 px-4">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg dark:bg-slate-900">
+        <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/60 px-4">
+          <div className="w-full max-w-md rounded-xl border border-slate-800 bg-[#0e1017] p-6 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold">Complete Trip</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">{shortId(completingTrip.id)}</p>
+                <p className="text-sm text-slate-400">{shortId(completingTrip.id)}</p>
               </div>
               <button
                 type="button"
                 onClick={closeCompleteModal}
-                className="text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                className="text-slate-400 hover:text-white"
               >
                 x
               </button>
             </div>
 
             <form onSubmit={handleCompleteTrip} className="space-y-4">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+              <label className="block text-sm font-medium text-slate-300">
                 Odometer reading
                 <input
                   type="number"
@@ -513,10 +513,10 @@ export default function TripDispatcher() {
                   required
                   value={completeForm.odometer_end}
                   onChange={(e) => setCompleteForm((prev) => ({ ...prev, odometer_end: e.target.value }))}
-                  className="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                  className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                 />
               </label>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+              <label className="block text-sm font-medium text-slate-300">
                 Fuel consumed (liters)
                 <input
                   type="number"
@@ -525,17 +525,17 @@ export default function TripDispatcher() {
                   required
                   value={completeForm.fuel_consumed}
                   onChange={(e) => setCompleteForm((prev) => ({ ...prev, fuel_consumed: e.target.value }))}
-                  className="mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                  className="mt-1 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                 />
               </label>
 
-              {completeError && <p className="text-sm text-rose-600 dark:text-rose-400">{completeError}</p>}
+              {completeError && <p className="text-sm text-rose-400">{completeError}</p>}
 
               <div className="flex justify-end gap-3 pt-2">
                 <button
                   type="button"
                   onClick={closeCompleteModal}
-                  className="rounded-md px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                  className="rounded-md px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
                 >
                   Cancel
                 </button>

@@ -167,27 +167,27 @@ export default function VehicleRegistry() {
       <section className="space-y-6 p-4 sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Fleet</p>
+            <p className="text-sm font-medium text-slate-400">Fleet</p>
             <h1 className="mt-1 text-2xl font-semibold tracking-normal">Vehicle Registry</h1>
           </div>
           {canEdit && (
             <button
               type="button"
               onClick={openAddModal}
-              className="inline-flex items-center justify-center rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+              className="inline-flex items-center justify-center rounded-md bg-orange-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
             >
               + Add Vehicle
             </button>
           )}
         </div>
 
-        <div className="grid gap-3 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 sm:grid-cols-3">
-          <label className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">
+        <div className="grid gap-3 rounded-lg border border-slate-800 bg-[#0e1017] p-4 sm:grid-cols-3">
+          <label className="text-xs font-semibold uppercase text-slate-400">
             Type
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="mt-1 h-10 w-full rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-medium normal-case text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-md border border-slate-700 bg-slate-950 px-3 text-sm font-medium normal-case text-slate-100 outline-none focus:border-orange-500"
             >
               <option>All</option>
               {types.map((type) => (
@@ -197,12 +197,12 @@ export default function VehicleRegistry() {
               ))}
             </select>
           </label>
-          <label className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">
+          <label className="text-xs font-semibold uppercase text-slate-400">
             Status
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="mt-1 h-10 w-full rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-medium normal-case text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-md border border-slate-700 bg-slate-950 px-3 text-sm font-medium normal-case text-slate-100 outline-none focus:border-orange-500"
             >
               <option>All</option>
               {STATUSES.map((status) => (
@@ -212,28 +212,32 @@ export default function VehicleRegistry() {
               ))}
             </select>
           </label>
-          <label className="text-xs font-semibold uppercase text-slate-500 dark:text-slate-400">
+          <label className="text-xs font-semibold uppercase text-slate-400">
             Search Reg No
             <input
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="e.g. KA-01-AB-1234"
-              className="mt-1 h-10 w-full rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-medium normal-case text-slate-900 outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 h-10 w-full rounded-md border border-slate-700 bg-slate-950 px-3 text-sm font-medium normal-case text-slate-100 outline-none placeholder:text-slate-600 focus:border-orange-500"
             />
           </label>
         </div>
 
+        <p className="text-xs text-rose-400">
+          Reg. Registration No. must be unique · Retired/Scrap vehicles are hidden from Trip Dispatcher
+        </p>
+
         {error && (
-          <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-300">
+          <div className="rounded-lg border border-rose-800 bg-rose-950/30 px-4 py-3 text-sm text-rose-300">
             {error}
           </div>
         )}
 
-        <div className="rounded-lg border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="rounded-lg border border-slate-800 bg-[#0e1017] shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px] text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase text-slate-500 dark:bg-slate-950 dark:text-slate-400">
+              <thead className="bg-slate-950/60 text-xs uppercase text-slate-400">
                 <tr>
                   <th className="px-4 py-3">Reg No</th>
                   <th className="px-4 py-3">Name / Model</th>
@@ -245,7 +249,7 @@ export default function VehicleRegistry() {
                   <th className="px-4 py-3">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-800">
                 {filteredVehicles.map((vehicle) => (
                   <tr key={vehicle.id}>
                     <td className="px-4 py-3 font-medium">{vehicle.reg_no}</td>
@@ -259,16 +263,16 @@ export default function VehicleRegistry() {
                         <select
                           value={vehicle.status}
                           onChange={(e) => handleStatusChange(vehicle.id, e.target.value)}
-                          className={`rounded-full border-0 px-2 py-1 text-xs font-semibold ring-1 outline-none ${statusClass(vehicle.status)}`}
+                          className={`rounded-full border-0 px-2 py-1 text-xs font-semibold outline-none ${statusClass(vehicle.status)}`}
                         >
                           {STATUSES.map((status) => (
-                            <option key={status} value={status}>
+                            <option key={status} value={status} className="bg-slate-900 text-slate-100">
                               {status}
                             </option>
                           ))}
                         </select>
                       ) : (
-                        <span className={`rounded-full px-2 py-1 text-xs font-semibold ring-1 ${statusClass(vehicle.status)}`}>
+                        <span className={`rounded-full px-2 py-1 text-xs font-semibold ${statusClass(vehicle.status)}`}>
                           {vehicle.status}
                         </span>
                       )}
@@ -278,7 +282,7 @@ export default function VehicleRegistry() {
                         <button
                           type="button"
                           onClick={() => openEditModal(vehicle)}
-                          className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+                          className="text-sm font-medium text-orange-400 hover:underline"
                         >
                           Edit
                         </button>
@@ -288,7 +292,7 @@ export default function VehicleRegistry() {
                 ))}
                 {!loading && filteredVehicles.length === 0 && (
                   <tr>
-                    <td className="px-4 py-8 text-center text-slate-500 dark:text-slate-400" colSpan="8">
+                    <td className="px-4 py-8 text-center text-slate-400" colSpan="8">
                       No vehicles found
                     </td>
                   </tr>
@@ -300,14 +304,14 @@ export default function VehicleRegistry() {
       </section>
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-20 flex items-center justify-center bg-slate-950/50 px-4">
-          <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-lg dark:bg-slate-900">
+        <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/60 px-4">
+          <div className="w-full max-w-lg rounded-xl border border-slate-800 bg-[#0e1017] p-6 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold">{editingId ? 'Edit Vehicle' : 'Add Vehicle'}</h2>
               <button
                 type="button"
                 onClick={closeModal}
-                className="text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                className="text-slate-400 hover:text-white"
               >
                 ✕
               </button>
@@ -316,42 +320,42 @@ export default function VehicleRegistry() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Reg No</label>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">Reg No</label>
                   <input
                     type="text"
                     required
                     value={form.reg_no}
                     onChange={(e) => updateField('reg_no', e.target.value)}
-                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Name / Model</label>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">Name / Model</label>
                   <input
                     type="text"
                     required
                     value={form.name}
                     onChange={(e) => updateField('name', e.target.value)}
-                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Type</label>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">Type</label>
                   <input
                     type="text"
                     required
                     value={form.type}
                     onChange={(e) => updateField('type', e.target.value)}
                     placeholder="e.g. Truck, Van, Bus"
-                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none placeholder:text-slate-600 focus:border-orange-500"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">Status</label>
                   <select
                     value={form.status}
                     onChange={(e) => updateField('status', e.target.value)}
-                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                   >
                     {STATUSES.map((status) => (
                       <option key={status} value={status}>
@@ -361,29 +365,29 @@ export default function VehicleRegistry() {
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Max Capacity</label>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">Max Capacity</label>
                   <input
                     type="number"
                     min="0"
                     required
                     value={form.max_capacity}
                     onChange={(e) => updateField('max_capacity', e.target.value)}
-                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Odometer</label>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">Odometer</label>
                   <input
                     type="number"
                     min="0"
                     required
                     value={form.odometer}
                     onChange={(e) => updateField('odometer', e.target.value)}
-                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Acquisition Cost</label>
+                  <label className="mb-1 block text-sm font-medium text-slate-300">Acquisition Cost</label>
                   <input
                     type="number"
                     min="0"
@@ -391,25 +395,25 @@ export default function VehicleRegistry() {
                     required
                     value={form.acquisition_cost}
                     onChange={(e) => updateField('acquisition_cost', e.target.value)}
-                    className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none focus:border-orange-500"
                   />
                 </div>
               </div>
 
-              {formError && <p className="text-sm text-rose-600 dark:text-rose-400">{formError}</p>}
+              {formError && <p className="text-sm text-rose-400">{formError}</p>}
 
               <div className="flex justify-end gap-3 pt-2">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="rounded-md px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                  className="rounded-md px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:opacity-50"
+                  className="rounded-md bg-orange-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-orange-600 disabled:opacity-50"
                 >
                   {submitting ? 'Saving…' : editingId ? 'Save Changes' : 'Add Vehicle'}
                 </button>
