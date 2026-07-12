@@ -43,14 +43,17 @@ export default function AppLayout({ active, children }) {
   })
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-950 dark:bg-slate-950 dark:text-slate-100">
+    <div className="app-shell">
       <div className="flex min-h-screen">
-        <aside className="hidden w-64 shrink-0 border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:block">
+        <aside className="app-sidebar">
           <div className="flex h-16 items-center border-b border-slate-200 px-6 dark:border-slate-800">
-            <div className="flex h-9 w-9 items-center justify-center rounded bg-slate-950 text-sm font-bold text-white dark:bg-white dark:text-slate-950">
+            <div className="brand-mark h-9 w-9">
               TO
             </div>
-            <span className="ml-3 text-lg font-semibold">TransitOps</span>
+            <div className="ml-3">
+              <span className="block text-lg font-black tracking-tight">TransitOps</span>
+              <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">Smart Transport Ops</span>
+            </div>
           </div>
           <nav className="space-y-1 p-4">
             {visibleNavItems.map((item) => (
@@ -63,10 +66,10 @@ export default function AppLayout({ active, children }) {
                       ? '/fuel-expenses'
                       : `/${item.toLowerCase().replaceAll(' ', '-').replace('&', 'and')}`
                 }
-                className={`block rounded-md px-3 py-2 text-sm font-medium transition ${
+                className={`nav-link ${
                   item === active
-                    ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
+                    ? 'nav-link-active'
+                    : 'nav-link-idle'
                 }`}
               >
                 {item}
@@ -76,30 +79,33 @@ export default function AppLayout({ active, children }) {
         </aside>
 
         <main className="min-w-0 flex-1">
-          <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-900/90">
+          <header className="app-topbar">
             <div className="flex min-h-16 flex-col gap-3 px-4 py-3 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex items-center gap-3 lg:hidden">
-                <div className="flex h-9 w-9 items-center justify-center rounded bg-slate-950 text-sm font-bold text-white dark:bg-white dark:text-slate-950">
+                <div className="brand-mark h-9 w-9">
                   TO
                 </div>
-                <span className="text-lg font-semibold">TransitOps</span>
+                <div>
+                  <span className="block text-lg font-black tracking-tight">TransitOps</span>
+                  <span className="block text-[11px] font-medium text-slate-500 dark:text-slate-400">Smart Transport Ops</span>
+                </div>
               </div>
               <input
                 type="search"
                 placeholder="Search vehicles, drivers, trips..."
-                className="h-10 w-full rounded-md border border-slate-200 bg-slate-50 px-3 text-sm outline-none transition focus:border-slate-400 focus:bg-white dark:border-slate-700 dark:bg-slate-950 dark:focus:border-slate-500 lg:max-w-md"
+                className="ui-input h-10 w-full bg-slate-50/80 dark:bg-slate-950 lg:max-w-md"
               />
               <div className="flex items-center gap-3">
                 <div className="text-right">
                   <p className="text-sm font-semibold">{displayName}</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400">{role}</p>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-600 text-sm font-bold text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-sm font-black text-blue-700 ring-1 ring-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:ring-blue-900">
                   {initials(profile?.name, user?.email)}
                 </div>
                 <button
                   onClick={signOut}
-                  className="rounded-md border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                  className="secondary-button px-3 py-2"
                 >
                   Sign Out
                 </button>
