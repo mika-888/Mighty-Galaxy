@@ -41,7 +41,13 @@ export default function AppLayout({ active, children }) {
             {navItems.map((item) => (
               <Link
                 key={item}
-                to={item === 'Dashboard' ? '/' : `/${item.toLowerCase().replaceAll(' ', '-').replace('&', 'and')}`}
+                to={
+                  item === 'Dashboard'
+                    ? '/'
+                    : item === 'Fuel & Expenses'
+                      ? '/fuel-expenses'
+                      : `/${item.toLowerCase().replaceAll(' ', '-').replace('&', 'and')}`
+                }
                 className={`block rounded-md px-3 py-2 text-sm font-medium transition ${
                   item === active
                     ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950'

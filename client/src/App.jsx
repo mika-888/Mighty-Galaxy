@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from './context/useAuth'
 import Dashboard from './pages/Dashboard'
 import Drivers from './pages/Drivers'
+import FuelExpenses from './pages/FuelExpenses'
 import Login from './pages/Login'
 import Maintenance from './pages/Maintenance'
 import TripDispatcher from './pages/TripDispatcher'
@@ -66,6 +67,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Maintenance />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/fuel-expenses"
+        element={
+          <ProtectedRoute>
+            <FuelExpenses />
           </ProtectedRoute>
         }
       />
