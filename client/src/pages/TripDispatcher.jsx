@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import AppLayout from '../components/AppLayout'
+import { useAuth } from '../context/useAuth'
+import { getAccess } from '../lib/permissions'
 import { supabase } from '../lib/supabase'
 import { statusClass } from '../lib/statusStyles'
 
@@ -35,6 +37,9 @@ function capacityBlockMessage(trip) {
 }
 
 export default function TripDispatcher() {
+  const { profile } = useAuth()
+  const canEdit = getAccess(profile?.role, 'trips') === 'full'
+
   const [trips, setTrips] = useState([])
   const [vehicles, setVehicles] = useState([])
   const [drivers, setDrivers] = useState([])
@@ -104,6 +109,7 @@ export default function TripDispatcher() {
 
   async function handleCreateTrip(e) {
     e.preventDefault()
+    if (!canEdit) return
     setFormError('')
     setActionMessage('')
     setSubmitting(true)
@@ -163,6 +169,7 @@ export default function TripDispatcher() {
   }
 
   async function dispatchTrip(trip) {
+    if (!canEdit) return
     const blockMessage = capacityBlockMessage(trip)
     if (blockMessage) {
       setActionMessage(blockMessage)
@@ -179,6 +186,7 @@ export default function TripDispatcher() {
   }
 
   async function cancelTrip(trip) {
+    if (!canEdit) return
     const ok = await updateSequence('cancel', trip, [
       () => supabase.from('trips').update({ status: 'Cancelled' }).eq('id', trip.id),
       () => supabase.from('vehicles').update({ status: 'Available' }).eq('id', trip.vehicle_id),
@@ -189,6 +197,7 @@ export default function TripDispatcher() {
   }
 
   function openCompleteModal(trip) {
+    if (!canEdit) return
     setCompletingTrip(trip)
     setCompleteForm(EMPTY_COMPLETE_FORM)
     setCompleteError('')
@@ -200,6 +209,7 @@ export default function TripDispatcher() {
 
   async function handleCompleteTrip(e) {
     e.preventDefault()
+    if (!canEdit) return
     setCompleteError('')
 
     const odometerEnd = Number(completeForm.odometer_end)
@@ -328,7 +338,7 @@ export default function TripDispatcher() {
                           </p>
                         )}
 
-                        {(trip.status === 'Draft' || trip.status === 'Dispatched') && (
+                        {canEdit && (trip.status === 'Draft' || trip.status === 'Dispatched') && (
                           <div className="mt-4 flex flex-wrap gap-2">
                             {trip.status === 'Draft' && (
                               <button
@@ -373,6 +383,12 @@ export default function TripDispatcher() {
 
           <aside className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 xl:sticky xl:top-24 xl:self-start">
             <h2 className="font-semibold">Create Trip</h2>
+            {!canEdit ? (
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Your role has view-only access to Trips.
+              </p>
+            ) : (
+              <>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Only available vehicles and non-expired available drivers are shown.
             </p>
@@ -465,6 +481,8 @@ export default function TripDispatcher() {
                 {submitting ? 'Creating...' : 'Create Draft Trip'}
               </button>
             </form>
+              </>
+            )}
           </aside>
         </div>
       </section>

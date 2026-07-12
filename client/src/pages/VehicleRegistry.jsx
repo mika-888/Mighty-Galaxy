@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import AppLayout from '../components/AppLayout'
+import { useAuth } from '../context/useAuth'
+import { getAccess } from '../lib/permissions'
 import { supabase } from '../lib/supabase'
 import { statusClass } from '../lib/statusStyles'
 
@@ -21,6 +23,9 @@ function currency(value) {
 }
 
 export default function VehicleRegistry() {
+  const { profile } = useAuth()
+  const canEdit = getAccess(profile?.role, 'fleet') === 'full'
+
   const [vehicles, setVehicles] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -106,6 +111,7 @@ export default function VehicleRegistry() {
 
   async function handleSubmit(e) {
     e.preventDefault()
+    if (!canEdit) return
     setFormError('')
     setSubmitting(true)
 
@@ -141,6 +147,7 @@ export default function VehicleRegistry() {
   }
 
   async function handleStatusChange(vehicleId, status) {
+    if (!canEdit) return
     const previous = vehicles
     setVehicles((prev) => prev.map((vehicle) => (vehicle.id === vehicleId ? { ...vehicle, status } : vehicle)))
 
@@ -163,13 +170,15 @@ export default function VehicleRegistry() {
             <p className="text-sm font-medium text-slate-500 dark:text-slate-400">Fleet</p>
             <h1 className="mt-1 text-2xl font-semibold tracking-normal">Vehicle Registry</h1>
           </div>
-          <button
-            type="button"
-            onClick={openAddModal}
-            className="inline-flex items-center justify-center rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
-          >
-            + Add Vehicle
-          </button>
+          {canEdit && (
+            <button
+              type="button"
+              onClick={openAddModal}
+              className="inline-flex items-center justify-center rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-200"
+            >
+              + Add Vehicle
+            </button>
+          )}
         </div>
 
         <div className="grid gap-3 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 sm:grid-cols-3">
@@ -246,26 +255,34 @@ export default function VehicleRegistry() {
                     <td className="px-4 py-3">{vehicle.odometer != null ? Number(vehicle.odometer).toLocaleString() : '-'}</td>
                     <td className="px-4 py-3">{currency(vehicle.acquisition_cost)}</td>
                     <td className="px-4 py-3">
-                      <select
-                        value={vehicle.status}
-                        onChange={(e) => handleStatusChange(vehicle.id, e.target.value)}
-                        className={`rounded-full border-0 px-2 py-1 text-xs font-semibold ring-1 outline-none ${statusClass(vehicle.status)}`}
-                      >
-                        {STATUSES.map((status) => (
-                          <option key={status} value={status}>
-                            {status}
-                          </option>
-                        ))}
-                      </select>
+                      {canEdit ? (
+                        <select
+                          value={vehicle.status}
+                          onChange={(e) => handleStatusChange(vehicle.id, e.target.value)}
+                          className={`rounded-full border-0 px-2 py-1 text-xs font-semibold ring-1 outline-none ${statusClass(vehicle.status)}`}
+                        >
+                          {STATUSES.map((status) => (
+                            <option key={status} value={status}>
+                              {status}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <span className={`rounded-full px-2 py-1 text-xs font-semibold ring-1 ${statusClass(vehicle.status)}`}>
+                          {vehicle.status}
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
-                      <button
-                        type="button"
-                        onClick={() => openEditModal(vehicle)}
-                        className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
-                      >
-                        Edit
-                      </button>
+                      {canEdit && (
+                        <button
+                          type="button"
+                          onClick={() => openEditModal(vehicle)}
+                          className="text-sm font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+                        >
+                          Edit
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { useAuth } from './context/useAuth'
+import { getAccess } from './lib/permissions'
 import Analytics from './pages/Analytics'
 import Dashboard from './pages/Dashboard'
 import Drivers from './pages/Drivers'
@@ -10,8 +11,8 @@ import Settings from './pages/Settings'
 import TripDispatcher from './pages/TripDispatcher'
 import VehicleRegistry from './pages/VehicleRegistry'
 
-function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth()
+function ProtectedRoute({ children, screenKey }) {
+  const { user, profile, loading } = useAuth()
 
   if (loading) {
     return (
@@ -24,6 +25,10 @@ function ProtectedRoute({ children }) {
   }
 
   if (!user) return <Navigate to="/login" replace />
+
+  if (screenKey && getAccess(profile?.role, screenKey) === 'none') {
+    return <Navigate to="/" replace state={{ accessDenied: true }} />
+  }
 
   return children
 }
@@ -43,7 +48,7 @@ function App() {
       <Route
         path="/fleet"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute screenKey="fleet">
             <VehicleRegistry />
           </ProtectedRoute>
         }
@@ -51,7 +56,7 @@ function App() {
       <Route
         path="/drivers"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute screenKey="drivers">
             <Drivers />
           </ProtectedRoute>
         }
@@ -59,7 +64,7 @@ function App() {
       <Route
         path="/trips"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute screenKey="trips">
             <TripDispatcher />
           </ProtectedRoute>
         }
@@ -75,7 +80,7 @@ function App() {
       <Route
         path="/fuel-expenses"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute screenKey="fuel-expenses">
             <FuelExpenses />
           </ProtectedRoute>
         }
@@ -83,7 +88,7 @@ function App() {
       <Route
         path="/analytics"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute screenKey="analytics">
             <Analytics />
           </ProtectedRoute>
         }

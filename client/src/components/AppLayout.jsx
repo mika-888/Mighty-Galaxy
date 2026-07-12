@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
+import { getAccess } from '../lib/permissions'
 
 const navItems = [
   'Dashboard',
@@ -11,6 +12,14 @@ const navItems = [
   'Analytics',
   'Settings',
 ]
+
+const NAV_SCREEN_KEYS = {
+  Fleet: 'fleet',
+  Drivers: 'drivers',
+  Trips: 'trips',
+  'Fuel & Expenses': 'fuel-expenses',
+  Analytics: 'analytics',
+}
 
 function initials(name, email) {
   const source = name || email || 'User'
@@ -27,6 +36,12 @@ export default function AppLayout({ active, children }) {
   const displayName = profile?.name || user?.email || 'Operator'
   const role = profile?.role || 'Team Member'
 
+  const visibleNavItems = navItems.filter((item) => {
+    const screenKey = NAV_SCREEN_KEYS[item]
+    if (!screenKey) return true
+    return getAccess(profile?.role, screenKey) !== 'none'
+  })
+
   return (
     <div className="min-h-screen bg-slate-100 text-slate-950 dark:bg-slate-950 dark:text-slate-100">
       <div className="flex min-h-screen">
@@ -38,7 +53,7 @@ export default function AppLayout({ active, children }) {
             <span className="ml-3 text-lg font-semibold">TransitOps</span>
           </div>
           <nav className="space-y-1 p-4">
-            {navItems.map((item) => (
+            {visibleNavItems.map((item) => (
               <Link
                 key={item}
                 to={

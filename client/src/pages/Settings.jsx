@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import AppLayout from '../components/AppLayout'
+import { PERMISSIONS, ROLES, SCREENS } from '../lib/permissions'
 
 const STORAGE_KEY = 'transitops-settings'
 
@@ -9,42 +10,17 @@ const DEFAULT_SETTINGS = {
   distanceUnit: 'Kilometers',
 }
 
-const rbacRows = [
-  {
-    role: 'Fleet Manager',
-    Fleet: '✓',
-    Drivers: '✓',
-    Trips: '–',
-    'Fuel/Exp.': '–',
-    Analytics: '✓',
-  },
-  {
-    role: 'Dispatcher',
-    Fleet: 'view',
-    Drivers: '–',
-    Trips: '✓',
-    'Fuel/Exp.': '–',
-    Analytics: '–',
-  },
-  {
-    role: 'Safety Officer',
-    Fleet: '–',
-    Drivers: '✓',
-    Trips: 'view',
-    'Fuel/Exp.': '–',
-    Analytics: '–',
-  },
-  {
-    role: 'Financial Analyst',
-    Fleet: 'view',
-    Drivers: '–',
-    Trips: '–',
-    'Fuel/Exp.': '✓',
-    Analytics: '✓',
-  },
-]
+const ACCESS_SYMBOL = { full: '✓', view: 'view', none: '–' }
 
-const accessColumns = ['Fleet', 'Drivers', 'Trips', 'Fuel/Exp.', 'Analytics']
+const rbacRows = ROLES.map((role) => {
+  const row = { role }
+  for (const screen of SCREENS) {
+    row[screen.label] = ACCESS_SYMBOL[PERMISSIONS[role][screen.key]]
+  }
+  return row
+})
+
+const accessColumns = SCREENS.map((screen) => screen.label)
 
 function accessClass(value) {
   if (value === '✓') {
