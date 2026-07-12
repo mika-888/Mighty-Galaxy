@@ -6,6 +6,7 @@ import Drivers from './pages/Drivers'
 import FuelExpenses from './pages/FuelExpenses'
 import Login from './pages/Login'
 import Maintenance from './pages/Maintenance'
+import Settings from './pages/Settings'
 import TripDispatcher from './pages/TripDispatcher'
 import VehicleRegistry from './pages/VehicleRegistry'
 
@@ -84,6 +85,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Analytics />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Settings />
           </ProtectedRoute>
         }
       />
