@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import AppLayout from '../components/AppLayout'
 import { supabase } from '../lib/supabase'
 import { statusClass } from '../lib/statusStyles'
@@ -10,11 +11,20 @@ function shortId(id) {
 }
 
 export default function Dashboard() {
+  const location = useLocation()
+  const navigate = useNavigate()
   const [vehicles, setVehicles] = useState([])
   const [drivers, setDrivers] = useState([])
   const [trips, setTrips] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [accessDeniedNotice, setAccessDeniedNotice] = useState(Boolean(location.state?.accessDenied))
+
+  useEffect(() => {
+    if (location.state?.accessDenied) {
+      navigate(location.pathname, { replace: true, state: {} })
+    }
+  }, [location, navigate])
 
   useEffect(() => {
     async function loadDashboard() {
@@ -90,6 +100,19 @@ export default function Dashboard() {
             </label>
           ))}
         </div>
+
+        {accessDeniedNotice && (
+          <div className="flex items-start justify-between gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-300">
+            <p>You don&apos;t have access to that section.</p>
+            <button
+              type="button"
+              onClick={() => setAccessDeniedNotice(false)}
+              className="shrink-0 text-amber-700 hover:text-amber-950 dark:text-amber-300 dark:hover:text-white"
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {error && (
           <div className="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-300">
